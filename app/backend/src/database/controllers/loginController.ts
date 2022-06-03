@@ -22,10 +22,7 @@ export default class LoginControler {
     }
   };
 
-  public loginValidator = async (
-    req: Request,
-    res: Response
-  ): Promise<Response | undefined> => {
+  public loginValidator = async (req: Request, res: Response): Promise<Response | undefined> => {
     try {
       const token = req.headers.authorization;
       if (!token) {
