@@ -23,7 +23,7 @@ describe('Testando endpoint /login', () => {
         username: "Admin",
         role: "admin",
         email: "admin@admin.com",
-        password:"$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW",
+        password:"$2a$12$tENzvmLDTPQ0XN3JxKBfwuck6sgEb7D9Czg7fGNMG5ssdN.JMJZky",
     } as UserModel);
   });
 
@@ -35,7 +35,7 @@ describe('Testando endpoint /login', () => {
     chaiHttpResponse = await chai
       .request(app)
       .post('/login')
-      .send({ email: 'admin@admin.com', password: 'secret_admin' });
+      .send({ email: 'admin@admin.com', password: '123456' });
     
     expect(chaiHttpResponse).to.have.status(200);
     expect(chaiHttpResponse.body).to.have.property('user');
@@ -43,15 +43,19 @@ describe('Testando endpoint /login', () => {
     expect(chaiHttpResponse.body.user).to.not.have.property('password');
   });
 
-  // it.only('Quando é feita a requisição, com um email inválido', async () => {
-
+  // it('Quando é feita a requisição, com um email inválido', async () => {
+  //   before(async () => {
+  //     sinon.stub(UserModel, 'findOne').resolves({ } as UserModel);
+  //   });
+  
+  //   after(() => {
+  //     (UserModel.findOne as sinon.SinonStub).restore();
+  //   });
   //   chaiHttpResponse = await chai
   //     .request(app)
   //     .post('/login')
-  //     .send({ email: 'com', password: 'secret_admin' });
+  //     .send({ email: 'errado@errado.com', password: '123456' });
       
-  //   console.log(chaiHttpResponse.body);
-
   //   expect(chaiHttpResponse).to.have.status(401);
   //   expect(chaiHttpResponse.body).to.not.have.property('user');
   //   expect(chaiHttpResponse.body).to.not.have.property('token');
