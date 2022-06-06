@@ -72,4 +72,74 @@ describe('Testando endpoint /login', () => {
       );
     });
   });
+
+  describe('Quando é feita a requisição, com um email válido e senha inválida', async () => {
+    let chaiHttpResponse: Response;
+
+    before(async () => {
+      sinon.stub(UserModel, 'findOne').resolves({
+        id: 1,
+        username: 'Admin',
+        role: 'admin',
+        email: 'admin@admin.com',
+        password:
+          '$2a$12$tENzvmLDTPQ0XN0000000000000',
+      } as UserModel);
+    });
+
+    after(() => {
+      (UserModel.findOne as sinon.SinonStub).restore();
+    });
+
+    it('a resposta é um objeto com status code 401 e a chave message', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .post('/login')
+        .send({ email: 'errado@errado.com', password: '123456' });
+
+      expect(chaiHttpResponse).to.have.status(401);
+      expect(chaiHttpResponse.body).to.not.have.property('user');
+      expect(chaiHttpResponse.body).to.not.have.property('token');
+      expect(chaiHttpResponse.body).to.have.property('message');
+      expect(chaiHttpResponse.body.message).to.be.equal(
+        'Incorrect email or password'
+      );
+    });
+  });
+
+  describe('Quando é feita a requisição, sem um email', async () => {
+
+    let chaiHttpResponse: Response;
+
+    it('a resposta é um objeto com status code 401 e a chave message', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .post('/login')
+        .send({ email: '', password: '123456' });
+
+      expect(chaiHttpResponse).to.have.status(400);
+      expect(chaiHttpResponse.body).to.have.property('message');
+      expect(chaiHttpResponse.body.message).to.be.equal(
+        'All fields must be filled'
+      );
+    });
+  });
+
+  describe('Quando é feita a requisição, sem um password', async () => {
+    
+    let chaiHttpResponse: Response;
+
+    it('a resposta é um objeto com status code 401 e a chave message', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .post('/login')
+        .send({ email: 'admin@admin.com', password: '' });
+
+      expect(chaiHttpResponse).to.have.status(400);
+      expect(chaiHttpResponse.body).to.have.property('message');
+      expect(chaiHttpResponse.body.message).to.be.equal(
+        'All fields must be filled'
+      );
+    });
+  });
 });
