@@ -7,8 +7,8 @@ import User from '../interfaces/User';
 export default class LoginService {
   private model;
 
-  constructor() {
-    this.model = UsersModel;
+  constructor(model: typeof UsersModel) {
+    this.model = model;
   }
 
   public async authenticate(email: string, pass: string): Promise<ErrorCode | User> {

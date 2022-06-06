@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
 import ErrorCode from '../interfaces/Error';
+import User from '../models/user';
 import Authenticator from '../service/auth';
 import LoginService from '../service/loginService';
 
 export default class LoginControler {
-  constructor(private loginService = new LoginService()) {}
+  constructor(private loginService = new LoginService(User)) {}
 
   public login = async (req: Request, res: Response): Promise<Response | undefined> => {
     try {
