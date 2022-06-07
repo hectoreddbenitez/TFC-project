@@ -16,4 +16,15 @@ export default class LeaderBoardController {
       res.status(500).json({ message: DEU_ERRADO });
     }
   };
+
+  public leaderBoardAway = async (req: Request, res: Response): Promise<Response | undefined> => {
+    try {
+      const leaderBoardAway = await this.leaderBoardService.orderBoardAway();
+
+      return res.status(200).json(leaderBoardAway);
+    } catch (e) {
+      console.log(e);
+      res.status(500).json({ message: DEU_ERRADO });
+    }
+  };
 }

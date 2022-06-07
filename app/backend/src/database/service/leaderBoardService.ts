@@ -23,6 +23,24 @@ const QUERYES_SEQUIELIZE_LITERALS_HOME = {
   query8: 'cast(cast((SUM(home_team_goals) - SUM(away_team_goals)) as UNSIGNED INTEGER) as SIGNED)',
 };
 
+const QUERYES_SEQUIELIZE_LITERALS_AWAY = {
+  // cast() converte do tipo original para o tipo especificado apos os "as"
+  query1: `cast(SUM(CASE 
+    WHEN away_team_goals > home_team_goals THEN 3 
+    WHEN away_team_goals < home_team_goals THEN 0
+    ELSE 1 END) as UNSIGNED INTEGER)`,
+  query2: 'cast(COUNT(away_team) as UNSIGNED INTEGER)',
+  query3: `cast(SUM(CASE WHEN home_team_goals < away_team_goals THEN 1 ELSE 0 END)
+   as UNSIGNED INTEGER)`,
+  query4: `cast(SUM(CASE WHEN home_team_goals = away_team_goals THEN 1 ELSE 0 END)
+   as UNSIGNED INTEGER)`,
+  query5: `cast(SUM(CASE WHEN home_team_goals > away_team_goals THEN 1 ELSE 0 END)
+   as UNSIGNED INTEGER)`,
+  query6: 'cast(SUM(away_team_goals) as UNSIGNED INTEGER)',
+  query7: 'cast(SUM(home_team_goals) as UNSIGNED INTEGER)',
+  query8: 'cast(cast((SUM(away_team_goals) - SUM(home_team_goals)) as UNSIGNED INTEGER) as SIGNED)',
+};
+
 function sortByPoints(a: ILeaderBoard, b: ILeaderBoard): number {
   let pointsDiference = b.totalPoints - a.totalPoints;
   if (pointsDiference === 0) {
@@ -79,6 +97,40 @@ export default class LeaderBoardService {
         ) })) as unknown as ILeaderBoard[];
 
     return vaiSerSorteado
+      .sort(sortByPoints);
+  }
+
+  public async leaderBoardAway(): Promise<ILeaderBoard[]> {
+    const matchResponse = await this.matchModel
+      .findAll({ where: { inProgress: false },
+        include: { model: Team, as: 'teamAway', attributes: { exclude: ['id', 'teamName'] } },
+        attributes: [
+          // sequilize subquery permite introduzir queryes padronizadas
+          // https://sequelize.org/docs/v6/other-topics/sub-queries/
+          [sequelize.literal('team_name'), 'name'],
+          [sequelize.literal(QUERYES_SEQUIELIZE_LITERALS_AWAY.query1), 'totalPoints'],
+          [sequelize.literal(QUERYES_SEQUIELIZE_LITERALS_AWAY.query2), 'totalGames'],
+          [sequelize.literal(QUERYES_SEQUIELIZE_LITERALS_AWAY.query3), 'totalVictories'],
+          [sequelize.literal(QUERYES_SEQUIELIZE_LITERALS_AWAY.query4), 'totalDraws'],
+          [sequelize.literal(QUERYES_SEQUIELIZE_LITERALS_AWAY.query5), 'totalLosses'],
+          [sequelize.literal(QUERYES_SEQUIELIZE_LITERALS_AWAY.query6), 'goalsFavor'],
+          [sequelize.literal(QUERYES_SEQUIELIZE_LITERALS_AWAY.query7), 'goalsOwn'],
+          [sequelize.literal(QUERYES_SEQUIELIZE_LITERALS_AWAY.query8), 'goalsBalance'],
+        ],
+        group: ['away_team'] });
+    const response = matchResponse.map((m) => m.dataValues);
+    return response as unknown as ILeaderBoard[];
+  }
+
+  public async orderBoardAway() {
+    const result1 = await this.leaderBoardAway();
+    const vaiSerSorteadoAway = result1.map((teamAway) => (
+      { ...teamAway,
+        efficiency: JSON.parse(
+          ((teamAway.totalPoints / (teamAway.totalGames * 3)) * 100).toFixed(2),
+        ) })) as unknown as ILeaderBoard[];
+
+    return vaiSerSorteadoAway
       .sort(sortByPoints);
   }
 }
