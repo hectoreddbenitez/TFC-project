@@ -61,7 +61,7 @@ const EditGame = ({
               }) }
             type="button"
           >
-            Editar
+            Salvar Edição
 
           </button>
           <button
@@ -69,7 +69,7 @@ const EditGame = ({
             onClick={ () => finishMatch(idMatch) }
             type="button"
           >
-            Finalizar
+            Finalizar Jogo
 
           </button>
         </div>
