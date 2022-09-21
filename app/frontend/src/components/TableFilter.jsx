@@ -17,7 +17,6 @@ const GamerFilter = ({ currentFilter, setCurrentFilter }) => {
           defaultValue={ currentFilter }
           data-testid="score_boarding__classification_filter"
         >
-          <option>Classificação Geral</option>
           <option>Classificação Mandantes</option>
           <option>Classificação Visitantes</option>
         </select>
