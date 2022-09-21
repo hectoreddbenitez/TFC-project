@@ -8,7 +8,7 @@ import '../styles/pages/leaderboard.css';
 
 const Leaderboard = () => {
   const [logged, setLogin] = useState(false);
-  const [currentFilter, setCurrentFilter] = useState('Classificação Geral');
+  const [currentFilter, setCurrentFilter] = useState('Classificação Mandantes');
 
   useEffect(() => {
     const user = localStorage.getItem('user');
