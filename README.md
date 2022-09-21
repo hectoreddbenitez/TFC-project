@@ -30,8 +30,8 @@ SKIP_PREFLIGHT_CHECK=true
 
 # Run on root directory:
 ```sh
-npm run compose:down
 npm run compose:up
+npm run compose:down
 ```
 
 # Run without docker:
@@ -61,8 +61,8 @@ localhost:3000
 
 This is a fullStack project which I have worked only at the backend to create a leaderboard for a football competition.
 
-Anyone can see the leaderboards but to start or finish a match you need to be logged in.
+Anyone can see the leaderboards but to start or finish a match or modify the number of goals, you need to be logged in. To test this functionality, you can use the administrator data user: "admin@admin.com" and password: "secret_admin".
 
 Login uses Jwt validation token and bcrypt.
 
-At the frontend there are 2 score tables: First one builds a leaderboard considering all matches, and second one considers matches where the teams are playing at home.
+At the frontend there are 2 score tables: First one builds a leaderboard considering home team matches, and second one considers matches where the teams are playing as away home.
