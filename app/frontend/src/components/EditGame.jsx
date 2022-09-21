@@ -16,6 +16,7 @@ const EditGame = ({
 }) => {
   const [currentHomeTeamGoals, setHomeTeamGoals] = useState(homeTeamGoals);
   const [currentAwayTeamGoals, setAwayTeamGoals] = useState(awayTeamGoals);
+  const [salvar, setSalvar] = useState(false);
   return (
     <section className="match-settings-section">
       <form className="match-settings-form">
@@ -51,6 +52,17 @@ const EditGame = ({
             getTeam={ getTeam }
           />
         </div>
+        {
+            (salvar)
+              ? (
+                <p>
+                  {
+                    `Edição salva com sucesso!`
+                  }
+                </p>
+              )
+              : null
+          }
         <div className="match-settings-form-buttons">
           <button
             data-testid="insertion_matches__edit_match_btn"
@@ -58,7 +70,7 @@ const EditGame = ({
               {
                 homeTeamGoals: currentHomeTeamGoals,
                 awayTeamGoals: currentAwayTeamGoals,
-              }) }
+              }, setSalvar(true)) }
             type="button"
           >
             Salvar Edição
